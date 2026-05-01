@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ventilación Espacios Confinados - Calculadora Profesional</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔄 Ventilación Espacios Confinados</h1>
+            <p>Calculadora profesional para ventilación de tanques y espacios confinados</p>
+        </header>
+
+        <main>
+            <!-- Formulario principal -->
+            <div class="form-card">
+                <h2>📐 Datos del Espacio Confinado</h2>
+                
+                <div class="form-group">
+                    <label for="formaTanque">Forma del tanque:</label>
+                    <select id="formaTanque" class="form-control">
+                        <option value="redondo">Redondo (cilíndrico)</option>
+                        <option value="cuadrado">Cuadrado (prisma)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="altura">Altura (metros):</label>
+                    <input type="number" id="altura" class="form-control" step="any" placeholder="Ej: 2.5">
+                    <small>Altura total del tanque</small>
+                </div>
+
+                <div class="form-group" id="diametroGroup">
+                    <label for="diametro">Diámetro (metros):</label>
+                    <input type="number" id="diametro" class="form-control" step="any" placeholder="Ej: 1.8">
+                    <small>Diámetro del tanque cilíndrico</small>
+                </div>
+
+                <div class="form-group" id="anchoGroup" style="display:none;">
+                    <label for="ancho">Ancho (metros):</label>
+                    <input type="number" id="ancho" class="form-control" step="any" placeholder="Ej: 1.8">
+                    <small>Ancho del tanque cuadrado</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="longitudManguera">Longitud de la manguera (metros):</label>
+                    <input type="number" id="longitudManguera" class="form-control" step="any" placeholder="Ej: 10">
+                    <small>Distancia desde el ventilador al punto de extracción</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="cantidadCodos">Cantidad de codos (90°):</label>
+                    <select id="cantidadCodos" class="form-control">
+                        <option value="0">0 codos</option>
+                        <option value="1">1 codo</option>
+                        <option value="2">2 codos</option>
+                        <option value="3">3 codos</option>
+                        <option value="4">4 codos</option>
+                        <option value="5">5 codos</option>
+                    </select>
+                </div>
+
+                <h2>💨 Datos del Ventilador</h2>
+
+                <div class="form-group">
+                    <label for="unidadesCaudal">Unidades del caudal:</label>
+                    <select id="unidadesCaudal" class="form-control">
+                        <option value="m3h">m³/h (metros cúbicos por hora)</option>
+                        <option value="cfm">CFM (pies cúbicos por minuto)</option>
+                        <option value="ls">L/s (litros por segundo)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="caudalVentilador">Caudal del ventilador:</label>
+                    <input type="number" id="caudalVentilador" class="form-control" step="any" placeholder="Ej: 500">
+                    <small id="unidadLabel">Ingrese el caudal en m³/h</small>
+                </div>
+
+                <button id="btnCalcular" class="btn-calcular">🔧 CALCULAR VENTILACIÓN</button>
+            </div>
+
+            <!-- Resultados -->
+            <div id="resultadoContainer" class="result-card" style="display: none;">
+                <div class="result-header">
+                    <span class="result-icon">📊</span>
+                    <h2>RESULTADO DEL CÁLCULO</h2>
+                </div>
+                <div id="resultadoTexto" class="result-content"></div>
+                <div class="result-footer">
+                    <span>🔍 Verifique los datos para una ventilación segura</span>
+                </div>
+            </div>
+
+            <!-- Firma -->
+            <div class="signature">
+                <div class="signature-content">
+                    <span class="signature-icon">⚡</span>
+                    <span>design by <strong>Jhonn R.</strong></span>
+                    <span class="signature-version">v2.0 | WebApp</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
