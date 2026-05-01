@@ -13,6 +13,34 @@ const unidadLabel = document.getElementById('unidadLabel');
 const btnCalcular = document.getElementById('btnCalcular');
 const resultadoContainer = document.getElementById('resultadoContainer');
 const resultadoTexto = document.getElementById('resultadoTexto');
+const themeToggle = document.getElementById('themeToggle');
+
+// Manejo del tema oscuro
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeToggle.textContent = '☀️';
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeToggle.textContent = '🌙';
+    }
+}
+
+function toggleTheme() {
+    if (document.documentElement.getAttribute('data-theme') === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        themeToggle.textContent = '🌙';
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeToggle.textContent = '☀️';
+    }
+}
+
+themeToggle.addEventListener('click', toggleTheme);
+initTheme();
 
 // Mostrar/ocultar campos según forma del tanque
 formaTanque.addEventListener('change', function() {
@@ -59,22 +87,22 @@ function calcularVolumen() {
 // Calcular pérdida por codos
 function calcularPerdidaCodos() {
     const codos = parseInt(cantidadCodosSelect.value);
-    return codos * 0.5; // Cada codo añade 0.5 m³/h de pérdida
+    return codos * 0.5;
 }
 
 // Convertir caudal a m³/h
 function convertirCaudalAM3H(caudal, unidades) {
     switch(unidades) {
         case 'cfm':
-            return caudal * 1.69901; // 1 CFM = 1.69901 m³/h
+            return caudal * 1.69901;
         case 'ls':
-            return caudal * 3.6; // 1 L/s = 3.6 m³/h
+            return caudal * 3.6;
         default:
-            return caudal; // m³/h
+            return caudal;
     }
 }
 
-// Obtener dimensión (diámetro o ancho)
+// Obtener dimensión
 function obtenerDimension() {
     if (formaTanque.value === 'redondo') {
         return parseFloat(diametroInput.value);
@@ -90,7 +118,6 @@ function obtenerNombreDimension() {
 
 // Función principal de cálculo
 function calcularVentilacion() {
-    // Validar campos
     const altura = parseFloat(alturaInput.value);
     const dimension = obtenerDimension();
     const longitudManguera = parseFloat(longitudMangueraInput.value);
@@ -117,19 +144,12 @@ function calcularVentilacion() {
         return;
     }
     
-    // Calcular volumen
     const volumen = calcularVolumen();
-    
-    // Convertir caudal
     const unidades = unidadesCaudalSelect.value;
     const caudalM3H = convertirCaudalAM3H(caudalVentilador, unidades);
-    
-    // Calcular pérdidas
-    const perdidaLongitud = longitudManguera * 0.1; // Pérdida de 0.1 m³/h por metro
+    const perdidaLongitud = longitudManguera * 0.1;
     const perdidaCodos = calcularPerdidaCodos();
     const perdidasTotales = perdidaLongitud + perdidaCodos;
-    
-    // Caudal efectivo
     let caudalEfectivo = caudalM3H - perdidasTotales;
     
     let resultadoHTML = '';
@@ -150,10 +170,7 @@ function calcularVentilacion() {
         return;
     }
     
-    // Calcular renovaciones
     const renovacionesHora = caudalEfectivo / volumen;
-    
-    // Determinar color y recomendación
     let colorRecomendacion = '';
     let mensajeRecomendacion = '';
     
@@ -171,9 +188,8 @@ function calcularVentilacion() {
         mensajeRecomendacion = '❌ INSUFICIENTE - Se requiere mayor capacidad de ventilación (<4 renovaciones/hora)';
     }
     
-    // Generar HTML del resultado
     resultadoHTML = `
-        <div style="color: #1A202C;">
+        <div>
             <strong>📊 RESULTADOS DEL CÁLCULO</strong><br><br>
             
             <strong>📐 Dimensiones del tanque:</strong><br>
