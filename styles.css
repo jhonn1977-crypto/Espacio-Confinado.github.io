@@ -1,22 +1,5 @@
 :root {
-    /* Modo claro (por defecto) */
-    --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --bg-card: #ffffff;
-    --text-primary: #1A202C;
-    --text-secondary: #4A5568;
-    --text-light: #718096;
-    --border-color: #E2E8F0;
-    --input-bg: #ffffff;
-    --input-border: #E2E8F0;
-    --input-focus: #4299E1;
-    --result-bg: #F7FAFC;
-    --header-text: #ffffff;
-    --shadow: 0 10px 30px rgba(0,0,0,0.2);
-    --btn-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-[data-theme="dark"] {
-    /* Modo oscuro */
+    /* Modo oscuro por defecto */
     --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     --bg-card: #1e1e2e;
     --text-primary: #E2E8F0;
@@ -30,6 +13,23 @@
     --header-text: #E2E8F0;
     --shadow: 0 10px 30px rgba(0,0,0,0.5);
     --btn-gradient: linear-gradient(135deg, #4299E1 0%, #667eea 100%);
+}
+
+[data-theme="light"] {
+    /* Modo claro */
+    --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --bg-card: #ffffff;
+    --text-primary: #1A202C;
+    --text-secondary: #4A5568;
+    --text-light: #718096;
+    --border-color: #E2E8F0;
+    --input-bg: #ffffff;
+    --input-border: #E2E8F0;
+    --input-focus: #4299E1;
+    --result-bg: #F7FAFC;
+    --header-text: #ffffff;
+    --shadow: 0 10px 30px rgba(0,0,0,0.2);
+    --btn-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 * {
@@ -298,21 +298,34 @@ header p {
 }
 
 /* Scrollbar personalizada para modo oscuro */
-[data-theme="dark"] ::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 10px;
     height: 10px;
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     background: #2D3748;
     border-radius: 5px;
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background: #4A5568;
     border-radius: 5px;
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
+    background: #4299E1;
+}
+
+/* Modo claro scrollbar */
+[data-theme="light"] ::-webkit-scrollbar-track {
+    background: #E2E8F0;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: #CBD5E0;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
     background: #4299E1;
 }

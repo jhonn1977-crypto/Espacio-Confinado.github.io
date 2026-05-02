@@ -15,21 +15,22 @@ const resultadoContainer = document.getElementById('resultadoContainer');
 const resultadoTexto = document.getElementById('resultadoTexto');
 const themeToggle = document.getElementById('themeToggle');
 
-// Manejo del tema oscuro
+// Manejo del tema (modo oscuro por defecto)
 function initTheme() {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
+    if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeToggle.textContent = '🌙';
+    } else {
         document.documentElement.setAttribute('data-theme', 'dark');
         themeToggle.textContent = '☀️';
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-        themeToggle.textContent = '🌙';
+        localStorage.setItem('theme', 'dark');
     }
 }
 
 function toggleTheme() {
     if (document.documentElement.getAttribute('data-theme') === 'dark') {
-        document.documentElement.removeAttribute('data-theme');
+        document.documentElement.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
         themeToggle.textContent = '🌙';
     } else {
@@ -59,6 +60,9 @@ unidadesCaudalSelect.addEventListener('change', function() {
     switch(unidades) {
         case 'm3h':
             unidadLabel.textContent = 'Ingrese el caudal en m³/h';
+            break;
+        case 'm3min':
+            unidadLabel.textContent = 'Ingrese el caudal en m³/min (se convertirá a m³/h)';
             break;
         case 'cfm':
             unidadLabel.textContent = 'Ingrese el caudal en CFM (pies cúbicos por minuto)';
@@ -93,12 +97,14 @@ function calcularPerdidaCodos() {
 // Convertir caudal a m³/h
 function convertirCaudalAM3H(caudal, unidades) {
     switch(unidades) {
+        case 'm3min':
+            return caudal * 60; // 1 m³/min = 60 m³/h
         case 'cfm':
-            return caudal * 1.69901;
+            return caudal * 1.69901; // 1 CFM = 1.69901 m³/h
         case 'ls':
-            return caudal * 3.6;
+            return caudal * 3.6; // 1 L/s = 3.6 m³/h
         default:
-            return caudal;
+            return caudal; // m³/h
     }
 }
 
@@ -114,6 +120,16 @@ function obtenerDimension() {
 // Obtener nombre de la dimensión
 function obtenerNombreDimension() {
     return formaTanque.value === 'redondo' ? 'Diámetro' : 'Ancho';
+}
+
+// Obtener unidad original para mostrar
+function obtenerUnidadOriginal(unidades) {
+    switch(unidades) {
+        case 'm3min': return 'm³/min';
+        case 'cfm': return 'CFM';
+        case 'ls': return 'L/s';
+        default: return 'm³/h';
+    }
 }
 
 // Función principal de cálculo
@@ -146,6 +162,7 @@ function calcularVentilacion() {
     
     const volumen = calcularVolumen();
     const unidades = unidadesCaudalSelect.value;
+    const unidadOriginal = obtenerUnidadOriginal(unidades);
     const caudalM3H = convertirCaudalAM3H(caudalVentilador, unidades);
     const perdidaLongitud = longitudManguera * 0.1;
     const perdidaCodos = calcularPerdidaCodos();
@@ -188,6 +205,12 @@ function calcularVentilacion() {
         mensajeRecomendacion = '❌ INSUFICIENTE - Se requiere mayor capacidad de ventilación (<4 renovaciones/hora)';
     }
     
+    // Mostrar también el caudal en m³/min si aplica
+    let caudalMinText = '';
+    if (unidades !== 'm3min') {
+        caudalMinText = `<br>• Caudal equivalente: ${(caudalVentilador / 60).toFixed(2)} m³/min`;
+    }
+    
     resultadoHTML = `
         <div>
             <strong>📊 RESULTADOS DEL CÁLCULO</strong><br><br>
@@ -199,11 +222,11 @@ function calcularVentilacion() {
             • Volumen: ${volumen.toFixed(2)} m³<br><br>
             
             <strong>💨 Sistema de ventilación:</strong><br>
-            • Caudal nominal: ${caudalVentilador.toFixed(2)} ${unidadesCaudalSelect.options[unidadesCaudalSelect.selectedIndex].text}<br>
-            • Caudal efectivo: ${caudalEfectivo.toFixed(2)} m³/h<br>
+            • Caudal nominal: ${caudalVentilador.toFixed(2)} ${unidadOriginal} = ${caudalM3H.toFixed(2)} m³/h${unidades === 'm3min' ? '' : `<br>• Caudal equivalente: ${(caudalVentilador / 60).toFixed(2)} m³/min`}<br>
+            • Caudal efectivo: ${caudalEfectivo.toFixed(2)} m³/h = ${(caudalEfectivo / 60).toFixed(2)} m³/min<br>
             • Longitud de manguera: ${longitudManguera.toFixed(2)} m<br>
             • Cantidad de codos: ${cantidadCodosSelect.value}<br>
-            • Pérdidas totales: ${perdidasTotales.toFixed(2)} m³/h<br><br>
+            • Pérdidas totales: ${perdidasTotales.toFixed(2)} m³/h (${(perdidasTotales / 60).toFixed(2)} m³/min)<br><br>
             
             <strong>⏱️ Tiempos de ventilación:</strong><br>
             • Tiempo para 1 renovación: ${(volumen / caudalEfectivo * 60).toFixed(1)} minutos<br>

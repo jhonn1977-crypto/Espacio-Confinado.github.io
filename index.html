@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -11,7 +11,7 @@
         <header>
             <div class="header-controls">
                 <button id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
-                    🌙
+                    ☀️
                 </button>
             </div>
             <h1>🔄 Ventilación Espacios Confinados</h1>
@@ -73,6 +73,7 @@
                     <label for="unidadesCaudal">Unidades del caudal:</label>
                     <select id="unidadesCaudal" class="form-control">
                         <option value="m3h">m³/h (metros cúbicos por hora)</option>
+                        <option value="m3min">m³/min (metros cúbicos por minuto)</option>
                         <option value="cfm">CFM (pies cúbicos por minuto)</option>
                         <option value="ls">L/s (litros por segundo)</option>
                     </select>
@@ -80,7 +81,7 @@
 
                 <div class="form-group">
                     <label for="caudalVentilador">Caudal del ventilador:</label>
-                    <input type="number" id="caudalVentilador" class="form-control" step="any" placeholder="Ej: 500">
+                    <input type="number" id="caudalVentilador" class="form-control" step="any" placeholder="Ej: 77">
                     <small id="unidadLabel">Ingrese el caudal en m³/h</small>
                 </div>
 
