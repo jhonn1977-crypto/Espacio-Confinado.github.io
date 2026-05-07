@@ -1,4 +1,40 @@
+// Base de datos de tanques por planta
+const tanquesPorPlanta = {
+    Jabones: [
+        { id: "FV29", nombre: "FV29", alto: 11.22, diametro: 6.22, forma: "redondo" },
+        { id: "FV30", nombre: "FV30", alto: 7.67, diametro: 5.4, forma: "redondo" },
+        { id: "FV31", nombre: "FV31", alto: 6.36, diametro: 5.18, forma: "redondo" },
+        { id: "FV32", nombre: "FV32", alto: 6.3, diametro: 3.88, forma: "redondo" },
+        { id: "FV34", nombre: "FV34", alto: 9.71, diametro: 5.8, forma: "redondo" },
+        { id: "FV35", nombre: "FV35", alto: 7.57, diametro: 9.1, forma: "redondo" },
+        { id: "FV36", nombre: "FV36", alto: 9.79, diametro: 5.8, forma: "redondo" },
+        { id: "FV37", nombre: "FV37", alto: 11.22, diametro: 6.22, forma: "redondo" },
+        { id: "PV1", nombre: "PV1", alto: 3.7, diametro: 4.25, forma: "redondo" },
+        { id: "RV71", nombre: "RV71", alto: 2.4, diametro: 5, forma: "redondo" },
+        { id: "RV73", nombre: "RV73", alto: 3.1, diametro: 2.74, forma: "redondo" },
+        { id: "RB74", nombre: "RB74", alto: 2.6, diametro: 4.65, forma: "redondo" },
+        { id: "RB79A", nombre: "RB79A", alto: 2, diametro: 2.44, forma: "redondo" },
+        { id: "RV81", nombre: "RV81", alto: 3, diametro: 2.92, forma: "cuadrado" },
+        { id: "SV50", nombre: "SV50", alto: 3.2, diametro: 3.8, forma: "redondo" },
+        { id: "SV50A", nombre: "SV50A", alto: 3.2, diametro: 3.8, forma: "redondo" },
+        { id: "TK1", nombre: "TK1", alto: 3.78, diametro: 3.91, forma: "redondo" },
+        { id: "TK2", nombre: "TK2", alto: 3.78, diametro: 3.91, forma: "redondo" }
+    ],
+    Liquidos: [
+        // Agrega aquí los tanques de Líquidos si los tienes
+    ],
+    CuidadoOral: [
+        // Agrega aquí los tanques de Cuidado Oral si los tienes
+    ],
+    Axion: [
+        // Agrega aquí los tanques de Axion si los tienes
+    ]
+};
+
 // Elementos del DOM
+const plantaSelect = document.getElementById('planta');
+const tanqueSelect = document.getElementById('tanque');
+const btnLimpiarCampos = document.getElementById('btnLimpiarCampos');
 const formaTanque = document.getElementById('formaTanque');
 const diametroGroup = document.getElementById('diametroGroup');
 const anchoGroup = document.getElementById('anchoGroup');
@@ -42,6 +78,125 @@ function toggleTheme() {
 
 themeToggle.addEventListener('click', toggleTheme);
 initTheme();
+
+// Cargar tanques según planta seleccionada
+plantaSelect.addEventListener('change', function() {
+    const planta = this.value;
+    const tanques = tanquesPorPlanta[planta] || [];
+    
+    // Limpiar select de tanques
+    tanqueSelect.innerHTML = '<option value="">Seleccione un tanque...</option>';
+    
+    if (tanques.length > 0) {
+        tanqueSelect.disabled = false;
+        tanques.forEach(tanque => {
+            const option = document.createElement('option');
+            option.value = tanque.id;
+            option.textContent = tanque.nombre;
+            tanqueSelect.appendChild(option);
+        });
+    } else {
+        tanqueSelect.disabled = true;
+        tanqueSelect.innerHTML = '<option value="">No hay tanques disponibles para esta planta</option>';
+    }
+    
+    // Limpiar campos al cambiar de planta
+    limpiarCamposTanque();
+});
+
+// Cargar dimensiones del tanque seleccionado
+tanqueSelect.addEventListener('change', function() {
+    const tanqueId = this.value;
+    if (!tanqueId) return;
+    
+    const planta = plantaSelect.value;
+    const tanques = tanquesPorPlanta[planta] || [];
+    const tanque = tanques.find(t => t.id === tanqueId);
+    
+    if (tanque) {
+        // Cargar altura
+        alturaInput.value = tanque.alto;
+        
+        // Cargar forma y dimensión
+        if (tanque.forma === 'redondo') {
+            formaTanque.value = 'redondo';
+            diametroGroup.style.display = 'block';
+            anchoGroup.style.display = 'none';
+            diametroInput.value = tanque.diametro;
+            anchoInput.value = '';
+        } else {
+            formaTanque.value = 'cuadrado';
+            diametroGroup.style.display = 'none';
+            anchoGroup.style.display = 'block';
+            diametroInput.value = '';
+            anchoInput.value = tanque.diametro; // Para cuadrado, el ancho es la dimensión
+        }
+        
+        // Mostrar mensaje de confirmación
+        mostrarNotificacion(`✅ Cargado: ${tanque.nombre} - ${tanque.forma === 'redondo' ? 'Cilíndrico' : 'Cuadrado'}`, '#48BB78');
+    }
+});
+
+// Limpiar todos los campos del tanque
+function limpiarCamposTanque() {
+    alturaInput.value = '';
+    diametroInput.value = '';
+    anchoInput.value = '';
+    formaTanque.value = 'redondo';
+    diametroGroup.style.display = 'block';
+    anchoGroup.style.display = 'none';
+}
+
+// Botón limpiar campos
+btnLimpiarCampos.addEventListener('click', function() {
+    limpiarCamposTanque();
+    plantaSelect.value = '';
+    tanqueSelect.innerHTML = '<option value="">Primero seleccione una planta...</option>';
+    tanqueSelect.disabled = true;
+    longitudMangueraInput.value = '';
+    cantidadCodosSelect.value = '0';
+    caudalVentiladorInput.value = '';
+    resultadoContainer.style.display = 'none';
+    mostrarNotificacion('🧹 Todos los campos han sido limpiados', '#4299E1');
+});
+
+// Función para mostrar notificaciones temporales
+function mostrarNotificacion(mensaje, color) {
+    const notificacion = document.createElement('div');
+    notificacion.textContent = mensaje;
+    notificacion.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${color};
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: fadeInOut 2s ease-in-out;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+    document.body.appendChild(notificacion);
+    
+    setTimeout(() => {
+        notificacion.remove();
+    }, 2000);
+}
+
+// Agregar animación CSS dinámicamente
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    }
+`;
+document.head.appendChild(style);
 
 // Mostrar/ocultar campos según forma del tanque
 formaTanque.addEventListener('change', function() {
@@ -98,13 +253,13 @@ function calcularPerdidaCodos() {
 function convertirCaudalAM3H(caudal, unidades) {
     switch(unidades) {
         case 'm3min':
-            return caudal * 60; // 1 m³/min = 60 m³/h
+            return caudal * 60;
         case 'cfm':
-            return caudal * 1.69901; // 1 CFM = 1.69901 m³/h
+            return caudal * 1.69901;
         case 'ls':
-            return caudal * 3.6; // 1 L/s = 3.6 m³/h
+            return caudal * 3.6;
         default:
-            return caudal; // m³/h
+            return caudal;
     }
 }
 
@@ -205,15 +360,16 @@ function calcularVentilacion() {
         mensajeRecomendacion = '❌ INSUFICIENTE - Se requiere mayor capacidad de ventilación (<4 renovaciones/hora)';
     }
     
-    // Mostrar también el caudal en m³/min si aplica
-    let caudalMinText = '';
-    if (unidades !== 'm3min') {
-        caudalMinText = `<br>• Caudal equivalente: ${(caudalVentilador / 60).toFixed(2)} m³/min`;
+    // Información del tanque seleccionado
+    let tanqueInfo = '';
+    const tanqueId = tanqueSelect.value;
+    if (tanqueId) {
+        tanqueInfo = `<br><strong>🏷️ Tanque seleccionado:</strong> ${tanqueId}<br>`;
     }
     
     resultadoHTML = `
         <div>
-            <strong>📊 RESULTADOS DEL CÁLCULO</strong><br><br>
+            <strong>📊 RESULTADOS DEL CÁLCULO</strong>${tanqueInfo}<br>
             
             <strong>📐 Dimensiones del tanque:</strong><br>
             • Forma: ${formaTanque.options[formaTanque.selectedIndex].text.toUpperCase()}<br>
@@ -222,7 +378,7 @@ function calcularVentilacion() {
             • Volumen: ${volumen.toFixed(2)} m³<br><br>
             
             <strong>💨 Sistema de ventilación:</strong><br>
-            • Caudal nominal: ${caudalVentilador.toFixed(2)} ${unidadOriginal} = ${caudalM3H.toFixed(2)} m³/h${unidades === 'm3min' ? '' : `<br>• Caudal equivalente: ${(caudalVentilador / 60).toFixed(2)} m³/min`}<br>
+            • Caudal nominal: ${caudalVentilador.toFixed(2)} ${unidadOriginal} = ${caudalM3H.toFixed(2)} m³/h<br>
             • Caudal efectivo: ${caudalEfectivo.toFixed(2)} m³/h = ${(caudalEfectivo / 60).toFixed(2)} m³/min<br>
             • Longitud de manguera: ${longitudManguera.toFixed(2)} m<br>
             • Cantidad de codos: ${cantidadCodosSelect.value}<br>
