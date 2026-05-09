@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Ventilación Espacios Confinados - Calculadora Profesional</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Librerías para PDF (cargadas al inicio con CDN confiables) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -19,7 +22,6 @@
         </header>
 
         <main>
-            <!-- Formulario principal -->
             <div class="form-card">
                 <h2>🏭 Selección de Planta y Tanque</h2>
                 
@@ -94,8 +96,9 @@
 
                 <h2>💨 Datos del Ventilador</h2>
 
+                <!-- Sección primer ventilador -->
                 <div class="form-group">
-                    <label for="unidadesCaudal">Unidades del caudal:</label>
+                    <label for="unidadesCaudal">Unidades del caudal principal:</label>
                     <select id="unidadesCaudal" class="form-control">
                         <option value="m3h">m³/h (metros cúbicos por hora)</option>
                         <option value="m3min">m³/min (metros cúbicos por minuto)</option>
@@ -105,12 +108,68 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="caudalVentilador">Caudal del ventilador:</label>
+                    <label for="caudalVentilador">Caudal del ventilador principal:</label>
                     <input type="number" id="caudalVentilador" class="form-control" step="any" placeholder="Ej: 77">
                     <small id="unidadLabel">Ingrese el caudal en m³/h</small>
                 </div>
 
-                <button id="btnCalcular" class="btn-calcular">🔧 CALCULAR VENTILACIÓN</button>
+                <!-- Sección segundo ventilador -->
+                <h2>🔄 Múltiples Puntos de Ventilación (Opcional)</h2>
+                <div class="form-group">
+                    <label>¿Usar segundo ventilador?</label>
+                    <select id="usarSegundoVentilador" class="form-control">
+                        <option value="no">No</option>
+                        <option value="si">Sí (inyección o extracción)</option>
+                    </select>
+                </div>
+                <div id="panelSegundoVentilador" style="display: none;">
+                    <div class="form-group">
+                        <label>Caudal del segundo ventilador:</label>
+                        <input type="number" id="caudalVentilador2" class="form-control" step="any" placeholder="Ej: 50">
+                    </div>
+                    <div class="form-group">
+                        <label>Unidades del segundo ventilador:</label>
+                        <select id="unidadesCaudal2" class="form-control">
+                            <option value="m3h">m³/h</option>
+                            <option value="m3min">m³/min</option>
+                            <option value="cfm">CFM</option>
+                            <option value="ls">L/s</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Modo de operación combinada:</label>
+                        <select id="modoCombinacion" class="form-control">
+                            <option value="suma">Sumar caudales (recomendado)</option>
+                            <option value="mayor">Usar el mayor caudal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sección cálculo inverso -->
+                <h2>🔄 Cálculo Inverso (Opcional)</h2>
+                <div class="form-group">
+                    <label>Calcular caudal necesario para:</label>
+                    <select id="tipoInverso" class="form-control">
+                        <option value="ninguno">No usar cálculo inverso</option>
+                        <option value="renovaciones">Renovaciones por hora deseadas</option>
+                        <option value="tiempo">Tiempo máximo para 1 renovación (minutos)</option>
+                    </select>
+                </div>
+                <div id="panelInverso" style="display: none;">
+                    <div class="form-group">
+                        <label id="labelInverso">Valor deseado:</label>
+                        <input type="number" id="valorInverso" class="form-control" step="any" placeholder="Ej: 6">
+                        <small id="unidadInverso"></small>
+                    </div>
+                    <div id="resultadoInverso" class="info-card" style="background: var(--result-bg); padding: 12px; border-radius: 8px; margin-top: 10px; display: none;"></div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="btnCalcular" class="btn-calcular" style="flex: 2;">🔧 CALCULAR VENTILACIÓN</button>
+                    <button id="btnCopiarResultado" class="btn-secundario" style="background: #4A5568; flex: 1;">📋 Copiar</button>
+                    <button id="btnDescargarPDF" class="btn-secundario" style="background: #2F855A; flex: 1;">📄 Descargar</button>
+                </div>
             </div>
 
             <!-- Resultados -->
@@ -130,7 +189,7 @@
                 <div class="signature-content">
                     <span class="signature-icon">⚡</span>
                     <span>design by <strong>Jhonn R.</strong></span>
-                    <span class="signature-version">v2.0 | WebApp | Dark Mode</span>
+                    <span class="signature-version">v3.0 | WebApp | Dark Mode</span>
                 </div>
             </div>
         </main>

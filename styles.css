@@ -175,6 +175,25 @@ header p {
 .btn-calcular:active {
     transform: translateY(0);
 }
+.btn-secundario {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+}
+.btn-secundario:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+.info-card {
+    background: var(--result-bg);
+    border-left: 4px solid #4299E1;
+    font-size: 14px;
+}
 
 .result-card {
     animation: slideIn 0.5s ease-out;
