@@ -434,26 +434,31 @@ async function descargarPDF() {
         minute: '2-digit',
         second: '2-digit'
     });
+
+	// Obtener planta y tanque seleccionados
+    const plantaSelect = document.getElementById('planta');
+    const tanqueSelect = document.getElementById('tanque');
+    const planta = plantaSelect.options[plantaSelect.selectedIndex]?.text || 'No especificada';
+    const tanque = tanqueSelect.options[tanqueSelect.selectedIndex]?.text || 'No especificado';
     
     // Obtener el texto del resultado
     const textoOriginal = resultadoTexto.innerText;
     
     // Crear el contenido con fecha y hora
     const contenidoConFecha = `
-========================================
+================================================
     INFORME DE VENTILACIÓN
     Espacios Confinados
-========================================
+================================================
     Fecha y hora: ${fechaHora}
-========================================
+    Planta: ${planta}
+    Tanque: ${tanque}
+================================================
 
 ${textoOriginal}
 
-========================================
-    Documento generado por Calculadora de Ventilación
-    design by Jhonn R.
-========================================
-Fecha de emisión: ${fechaHora}
+================================================
+
     `;
     
     try {
